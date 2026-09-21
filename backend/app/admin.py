@@ -1,3 +1,6 @@
 from django.contrib import admin
+from .models import Paper
 
-# Register your models here.
+@admin.register(Paper)
+class PaperAdmin(admin.ModelAdmin):
+    list_display = ['id', 'title', 'university', 'subject', 'file', 'uploaded_at']
