@@ -7,17 +7,26 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id','username','email','password']
-        extra_kwargs = {'password': {'write_only': True}}
+        extra_kwargs = {'password': {'write_only': True},'email': {'required': True}}
 
     def create(self, validated_data):
         user = User.objects.create_user(**validated_data)
         return user
 
+    def validate_email(self, value):
+        if User.objects.filter(email=value).exists():
+            raise serializers.ValidationError(
+                "A user with this email already exists."
+            )
+
+        return value
+
 class PaperSerializer(serializers.ModelSerializer):
+    uploaded_by = serializers.CharField(read_only=True)
 
     class Meta:
         model = Paper
-        fields = ['id','title','university','subject','file','uploaded_at']
+        fields = ['id','title','university','subject','file','uploaded_at','uploaded_by']
 
         def validate_title(self,value):
             if not value.strip():
