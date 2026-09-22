@@ -1,10 +1,30 @@
 import "./App.css";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import HomePage from "./Pages/HomePage";
+import LoginPage from "./Pages/LoginPage";
+import ProfilePage from "./Pages/ProfilePage";
+import RegisterPage from "./Pages/RegisterPage";
+import ProtectedRoute from "./Routes/ProtectedRoute";
+import NotFoundPage from "./Pages/NotFoundPage ";
 
 function App() {
   return (
-    <>
-      <h1 className="text-4xl font-bold text-blue-600">Hello Tailwind!</h1>
-    </>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <ProfilePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="/signup" element={<RegisterPage />} />
+        <Route path="*" element={<NotFoundPage />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
