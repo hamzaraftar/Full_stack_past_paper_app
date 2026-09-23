@@ -6,6 +6,7 @@ import ProfilePage from "./Pages/ProfilePage";
 import RegisterPage from "./Pages/RegisterPage";
 import ProtectedRoute from "./Routes/ProtectedRoute";
 import NotFoundPage from "./Pages/NotFoundPage ";
+import UploadPage from "./Pages/UploadPage";
 
 function App() {
   return (
@@ -18,6 +19,14 @@ function App() {
           element={
             <ProtectedRoute>
               <ProfilePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/upload"
+          element={
+            <ProtectedRoute>
+              <UploadPage />
             </ProtectedRoute>
           }
         />
