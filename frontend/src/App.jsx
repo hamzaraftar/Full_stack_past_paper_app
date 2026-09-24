@@ -7,12 +7,15 @@ import RegisterPage from "./Pages/RegisterPage";
 import ProtectedRoute from "./Routes/ProtectedRoute";
 import NotFoundPage from "./Pages/NotFoundPage ";
 import UploadPage from "./Pages/UploadPage";
+import AboutPage from "./Pages/AboutPage";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<HomePage />} />
+        <Route path="/about" element={<AboutPage />} />
+
         <Route path="/login" element={<LoginPage />} />
         <Route
           path="/profile"

@@ -1,11 +1,16 @@
 import React from "react";
 import Navebar from "../Components/Navebar";
+import Card from "../Components/Card";
+import Footer from "../Components/Footer";
 
 function HomePage() {
   return (
-    <div>
+    <div className="flex min-h-screen flex-col bg-[#F6F1E4]">
       <Navebar />
-      <h1  className="text-4xl">Home page</h1>
+      <main className="flex-1">
+        <Card />
+      </main>
+      <Footer />
     </div>
   );
 }

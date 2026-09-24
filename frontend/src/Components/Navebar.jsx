@@ -37,7 +37,11 @@ function Navbar() {
   }
 
   function onUploadClick() {
-    navigater("/upload");
+    if (isLoggedIn) {
+      navigater("/upload");
+    } else {
+      navigater("/login");
+    }
   }
 
   const initial = user?.username ? user.username.charAt(0).toUpperCase() : "";
@@ -100,7 +104,7 @@ function Navbar() {
             <div className="relative">
               <button
                 onClick={() => setMenuOpen((v) => !v)}
-                className={`flex h-9 w-9 items-center justify-center rounded-full bg-[#B0895A] text-sm font-bold text-white ${focusRing}`}
+                className={`cursor-pointer flex h-9 w-9 items-center justify-center rounded-full bg-[#B0895A] text-sm font-bold text-white ${focusRing}`}
                 aria-label="Account menu"
               >
                 {initial || "•"}
@@ -108,7 +112,7 @@ function Navbar() {
               {menuOpen && (
                 <div className="absolute right-0 mt-2 w-56 rounded-xl border border-[#17193B]/10 bg-white py-1.5 shadow-lg">
                   <div className="border-b border-[#17193B]/10 px-4 py-2.5">
-                    <p className="truncate text-sm font-semibold text-[#17193B]">
+                    <p className=" truncate text-sm font-semibold text-[#17193B]">
                       {user?.username || "Loading..."}
                     </p>
                     <p className="truncate text-sm text-[#17193B]/60">
