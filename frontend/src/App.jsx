@@ -8,6 +8,7 @@ import ProtectedRoute from "./Routes/ProtectedRoute";
 import NotFoundPage from "./Pages/NotFoundPage ";
 import UploadPage from "./Pages/UploadPage";
 import AboutPage from "./Pages/AboutPage";
+import PaperPage from "./Pages/PaperPage";
 
 function App() {
   return (
@@ -15,6 +16,8 @@ function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/about" element={<AboutPage />} />
+        <Route path="/papers" element={<PaperPage />} />
+        
 
         <Route path="/login" element={<LoginPage />} />
         <Route

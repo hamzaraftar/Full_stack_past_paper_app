@@ -65,8 +65,9 @@ function PaperCard({ paper }) {
           {paper.title}
         </h3>
 
-        <p className="mt-1 text-sm text-[#17193B]/70">
-          {paper.university} · {paper.subject}
+        <p className="mt-1 text-sm font-semibold text-[#17193B]/70">
+          <span className="text-[#2563EB]">{paper.university}</span> ·{" "}
+          {paper.subject}
         </p>
 
         <p className="mt-1 text-xs text-[#17193B]/50">
@@ -78,7 +79,7 @@ function PaperCard({ paper }) {
       <div className="mt-5 border-t border-[#17193B]/10 pt-3">
         <div className="mb-3">
           <span className="block truncate text-xs text-[#17193B]/50">
-            Shared by {paper.uploaded_by}
+            Shared by <span className="font-bold">{paper.uploaded_by}</span>
           </span>
         </div>
 

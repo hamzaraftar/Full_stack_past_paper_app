@@ -1,9 +1,285 @@
-import React from 'react'
+import { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import api from "../api";
+
+// Same fonts as LoginPage.jsx (see the <link> comment there).
+const display =
+  "font-['Bricolage_Grotesque',ui-sans-serif,system-ui,sans-serif]";
+const body = "font-['Figtree',ui-sans-serif,system-ui,sans-serif]";
+
+const focusRing =
+  "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#B0895A]";
+
+const inputClass =
+  "w-full rounded-xl border-2 border-[#17193B]/15 bg-white px-4 py-3.5 text-base text-[#17193B] placeholder:text-[#17193B]/40 transition-colors hover:border-[#17193B]/30 focus:border-[#B0895A] focus:outline-none focus:ring-4 focus:ring-[#B0895A]/15 disabled:cursor-not-allowed disabled:opacity-60";
 
 function UploadPage() {
+  const [title, setTitle] = useState("");
+  const [university, setUniversity] = useState("");
+  const [subject, setSubject] = useState("");
+  const [file, setFile] = useState(null); // File object, not a string
+  const [fileName, setFileName] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
+
+  const navigate = useNavigate();
+
+  const handleFileChange = (e) => {
+    const selected = e.target.files?.[0] || null;
+    setFile(selected);
+    setFileName(selected ? selected.name : "");
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setErrorMsg("");
+
+    if (!title || !university || !subject || !file) {
+      setErrorMsg("Fill in every field and attach a file before uploading.");
+      return;
+    }
+
+    setLoading(true);
+
+    // File uploads need FormData, not a plain JSON object.
+    const formData = new FormData();
+    formData.append("title", title);
+    formData.append("university", university);
+    formData.append("subject", subject);
+    formData.append("file", file);
+
+    try {
+      await api.post("api/papers/", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      setSuccess(true);
+      setTimeout(() => navigate("/profile"), 1200);
+    } catch (error) {
+      console.error(error.message);
+      setErrorMsg("Couldn't upload that paper. Check the file and try again.");
+      setLoading(false);
+    }
+  };
+
+  const locked = loading || success;
+
   return (
-    <div>UploadPage</div>
-  )
+    <div
+      className={`${body} flex min-h-screen flex-col items-center justify-center bg-[#F6F1E4] px-6 py-12 text-[#17193B]`}
+    >
+      {/* Logo */}
+      <Link
+        to="/"
+        className={`mb-8 flex items-center gap-2.5 rounded-lg ${focusRing}`}
+      >
+        <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#16202B] text-[#F6F1E4]">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.8"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="h-5 w-5"
+            aria-hidden="true"
+          >
+            <path d="M7 3.5h7l4 4V19a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4.5a1 1 0 0 1 1-1z" />
+            <path d="M14 3.5V8h4" />
+            <path d="M9 12.5h6" />
+            <path d="M9 15.5h6" />
+          </svg>
+        </span>
+        <span className={`${display} text-xl font-extrabold`}>PaperVault</span>
+      </Link>
+
+      {/* Card with offset colour block behind it */}
+      <div className="relative w-full max-w-md pb-4 pr-4">
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 translate-x-4 translate-y-4 rounded-3xl bg-[#B0895A]"
+        />
+
+        <div className="relative rounded-3xl border border-[#17193B]/10 bg-white p-8 shadow-sm sm:p-10">
+          <h1 className={`${display} text-4xl font-extrabold tracking-tight`}>
+            Upload a paper
+          </h1>
+          <p className="mt-2 text-[#17193B]/70">
+            Add your past paper to the vault — it'll be there for the next
+            student who needs it.
+          </p>
+
+          <form onSubmit={handleSubmit} className="mt-8 space-y-5">
+            <div>
+              <label
+                htmlFor="title"
+                className="mb-2 block text-sm font-semibold"
+              >
+                Title
+              </label>
+              <input
+                id="title"
+                type="text"
+                placeholder="e.g. Physics Paper or Course code"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                disabled={locked}
+                className={inputClass}
+              />
+            </div>
+
+            <div>
+              <label
+                htmlFor="university"
+                className="mb-2 block text-sm font-semibold"
+              >
+                University / Institution
+              </label>
+              <input
+                id="university"
+                type="text"
+                placeholder="e.g. University of the Punjab"
+                value={university}
+                onChange={(e) => setUniversity(e.target.value)}
+                disabled={locked}
+                className={inputClass}
+              />
+            </div>
+
+            <div>
+              <label
+                htmlFor="subject"
+                className="mb-2 block text-sm font-semibold"
+              >
+                Subject
+              </label>
+              <input
+                id="subject"
+                type="text"
+                placeholder="e.g. Physics"
+                value={subject}
+                onChange={(e) => setSubject(e.target.value)}
+                disabled={locked}
+                className={inputClass}
+              />
+            </div>
+
+            <div>
+              <label
+                htmlFor="file"
+                className="mb-2 block text-sm font-semibold"
+              >
+                File
+              </label>
+              <label
+                htmlFor="file"
+                className={`flex cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-[#17193B]/20 bg-[#F6F1E4]/50 px-4 py-8 text-center transition-colors hover:border-[#B0895A] ${
+                  locked ? "pointer-events-none opacity-60" : ""
+                }`}
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="h-7 w-7 text-[#B0895A]"
+                  aria-hidden="true"
+                >
+                  <path d="M12 15V4M7 9l5-5 5 5" />
+                  <path d="M5 15v3a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-3" />
+                </svg>
+                <span className="text-sm font-medium text-[#17193B]">
+                  {fileName || "Click to choose a PDF or image"}
+                </span>
+                <span className="text-xs text-[#17193B]/50">
+                  Only PDF up to 20MB
+                </span>
+                <input
+                  id="file"
+                  type="file"
+                  accept=".pdf,.jpg,.jpeg,.png"
+                  onChange={handleFileChange}
+                  disabled={locked}
+                  className="sr-only"
+                />
+              </label>
+            </div>
+
+            {/* Error message */}
+            {errorMsg && (
+              <div
+                role="alert"
+                className="flex items-start gap-3 rounded-xl border border-[#A3432E]/25 bg-[#A3432E]/6 px-4 py-3 text-sm font-medium text-[#8A3624]"
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="mt-0.5 h-5 w-5 shrink-0"
+                  aria-hidden="true"
+                >
+                  <circle cx="12" cy="12" r="9" />
+                  <path d="M12 8v5" />
+                  <path d="M12 16h.01" />
+                </svg>
+                <span>{errorMsg}</span>
+              </div>
+            )}
+
+            {/* Success message */}
+            {success && (
+              <div
+                role="status"
+                className="flex items-start gap-3 rounded-xl border border-[#1B7F4B]/30 bg-[#E6F6EC] px-4 py-3 text-sm font-medium text-[#14603A]"
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="mt-0.5 h-5 w-5 shrink-0"
+                  aria-hidden="true"
+                >
+                  <circle cx="12" cy="12" r="9" />
+                  <path d="M8 12.5l3 3 5-6" />
+                </svg>
+                <span>Paper uploaded! Thanks for helping other students.</span>
+              </div>
+            )}
+
+            <button
+              type="submit"
+              disabled={locked}
+              className={`flex w-full cursor-pointer items-center justify-center gap-2.5 rounded-full bg-[#16202B] px-8 py-4 text-base font-semibold text-[#F6F1E4] shadow-lg shadow-[#16202B]/20 transition-colors hover:bg-[#0F1720] active:bg-[#0A1017] disabled:cursor-not-allowed disabled:opacity-70 ${focusRing}`}
+            >
+              {loading && !success && (
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="3"
+                  strokeLinecap="round"
+                  className="h-5 w-5 animate-spin motion-reduce:animate-none"
+                  aria-hidden="true"
+                >
+                  <path d="M12 3a9 9 0 1 0 9 9" />
+                </svg>
+              )}
+              {success ? "Uploaded" : loading ? "Uploading…" : "Upload paper"}
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  );
 }
 
-export default UploadPage
+export default UploadPage;

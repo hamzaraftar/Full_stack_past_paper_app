@@ -39,7 +39,7 @@ function Footer() {
 
         {/* Links */}
         <nav className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-[#F6F1E4]/70">
-          <Link to="/papers" className="hover:text-[#F6F1E4]">
+          <Link to="/" className="hover:text-[#F6F1E4]">
             Browse papers
           </Link>
           <Link to="/upload" className="hover:text-[#F6F1E4]">
@@ -51,9 +51,7 @@ function Footer() {
           <Link to="/about" className="hover:text-[#F6F1E4]">
             About
           </Link>
-          <Link to="/contact" className="hover:text-[#F6F1E4]">
-            Contact
-          </Link>
+         
         </nav>
 
         {/* Copyright */}
