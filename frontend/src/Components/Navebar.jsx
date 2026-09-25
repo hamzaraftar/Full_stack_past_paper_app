@@ -13,7 +13,7 @@ const focusRing =
 function Navbar() {
   const navigater = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
-  const isLoggedIn = Boolean(localStorage.getItem(ACCESS_TOKEN));
+  const isLoggedIn = Boolean(localStorage.getItem("access"));
   const [user, setUser] = useState(null);
 
   useEffect(() => {

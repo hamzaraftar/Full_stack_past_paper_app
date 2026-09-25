@@ -1,0 +1,17 @@
+/* Progress bar */
+#nprogress .bar {
+  background: #17193b;
+  height: 5px;
+}
+
+/* Glow effect */
+#nprogress .peg {
+  box-shadow:
+    0 0 10px #151520,
+    0 0 5px #151520;
+}
+
+/* Remove the spinner */
+#nprogress .spinner {
+  display: none;
+}

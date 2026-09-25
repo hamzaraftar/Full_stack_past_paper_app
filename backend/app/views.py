@@ -23,7 +23,7 @@ class UserInfo(APIView):
             return Response({"message":"User was created successfully "},status=201)
         return Response(serializer.errors, status=400)
 
-# Profile view
+#---------------------------------------- Profile view
 class ProfileAPIView(APIView):
     permission_classes = [IsAuthenticated]
 

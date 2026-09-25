@@ -11,11 +11,13 @@ import AboutPage from "./Pages/AboutPage";
 import PaperPage from "./Pages/PaperPage";
 import Navebar from "./Components/Navebar";
 import Footer from "./Components/Footer";
+import TopProgressBar from "./Components/TopProgressBar";
 
 function App() {
   return (
     <BrowserRouter>
       <div className="flex min-h-screen flex-col">
+        <TopProgressBar />
         <Navebar />
         <main className="flex flex-1 flex-col">
           <Routes>
