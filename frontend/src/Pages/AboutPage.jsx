@@ -1,6 +1,3 @@
-import Navebar from "../Components/Navebar";
-import Footer from "../Components/Footer";
-
 const display =
   "font-['Bricolage_Grotesque',ui-sans-serif,system-ui,sans-serif]";
 
@@ -80,7 +77,6 @@ function ValueCard({ icon, title, text }) {
 function AboutPage() {
   return (
     <div className="flex min-h-screen flex-col bg-[#F6F1E4]">
-      <Navebar />
 
       <main className="flex-1">
         {/* Hero */}
@@ -153,7 +149,6 @@ function AboutPage() {
         </section>
       </main>
 
-      <Footer />
     </div>
   );
 }

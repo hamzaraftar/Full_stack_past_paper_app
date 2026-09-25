@@ -1,3 +1,6 @@
+import { Link, useNavigate } from "react-router";
+import { ACCESS_TOKEN } from "../constant";
+
 const display =
   "font-['Bricolage_Grotesque',ui-sans-serif,system-ui,sans-serif]";
 
@@ -38,8 +41,19 @@ function SearchIcon({ className }) {
 }
 
 function Hero() {
+  const navigate = useNavigate();
+  const isLoggedIn = Boolean(localStorage.getItem(ACCESS_TOKEN));
+
+  function handleUploadClick() {
+    if (isLoggedIn) {
+      navigate("/upload");
+    } else {
+      navigate("/login");
+    }
+  }
+
   return (
-    <section className="px-6 pt-14 pb-16">
+    <section className="flex flex-1 flex-col items-center justify-center px-6 py-14">
       <div className="mx-auto max-w-4xl text-center">
         <span className="rounded-full bg-white px-3 py-1 text-xs font-semibold text-[#B0895A]">
           Built by students, for students
@@ -59,23 +73,23 @@ function Hero() {
         </p>
 
         <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-          {/* Upload button */}
-          <a
-            href="/upload"
-            className="flex items-center gap-2 rounded-full bg-[#16202B] px-6 py-3 text-sm font-semibold text-[#F6F1E4] transition-colors hover:bg-[#0F1720]"
+          {/* Upload button — checks login first */}
+          <button
+            onClick={handleUploadClick}
+            className="cursor-pointer flex items-center gap-2 rounded-full bg-[#16202B] px-6 py-3 text-sm font-semibold text-[#F6F1E4] transition-colors hover:bg-[#0F1720]"
           >
             <UploadIcon className="h-4 w-4" />
             Upload a paper
-          </a>
+          </button>
 
-          {/* Browse button */}
-          <a
-            href="/papers"
+          {/* Browse button — always open */}
+          <Link
+            to="/papers"
             className="flex items-center gap-2 rounded-full border-2 border-[#16202B] px-6 py-3 text-sm font-semibold text-[#16202B] transition-colors hover:bg-[#16202B] hover:text-[#F6F1E4]"
           >
             <SearchIcon className="h-4 w-4" />
             Browse papers
-          </a>
+          </Link>
         </div>
 
         <p className="mt-5 text-xs text-[#17193B]/50">
