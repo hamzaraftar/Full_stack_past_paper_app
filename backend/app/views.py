@@ -23,6 +23,15 @@ class UserInfo(APIView):
             return Response({"message":"User was created successfully "},status=201)
         return Response(serializer.errors, status=400)
 
+# Profile view
+class ProfileAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self,request):
+        papers = Paper.objects.filter(uploaded_by=request.user)
+        serializer = PaperSerializer(papers , many=True)
+        return Response(serializer.data)
+
 #---------------------------------------- for Papers
 class PaperAPIView(APIView):
     def get_permissions(self):

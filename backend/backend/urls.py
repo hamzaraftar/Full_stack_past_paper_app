@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
-from app.views import UserInfo,PaperAPIView
+from app.views import UserInfo,PaperAPIView,ProfileAPIView
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
@@ -18,6 +18,9 @@ urlpatterns = [
     path('api/login/', TokenObtainPairView.as_view(), name='token_obtain_pair'),    
     path('api/users/signup/', UserInfo.as_view(),name='register'),
     path('api/users/me/', UserInfo.as_view(), name='user_detail'),
+
+    # my papers mean Profile
+    path('api/profile/',ProfileAPIView.as_view() , name='profile'),
 
     # for papers
     path('api/papers/',PaperAPIView.as_view() ,name="todo_details"),
