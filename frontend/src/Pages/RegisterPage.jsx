@@ -102,32 +102,6 @@ function Register() {
     <div
       className={`${body} flex h-screen flex-col items-center justify-center overflow-hidden bg-[#F6F1E4] px-6 py-4 text-[#17193B]`}
     >
-      {/* Logo */}
-      <Link
-        to="/"
-        className={`mb-4 flex items-center gap-2.5 rounded-lg ${focusRing}`}
-      >
-        <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#16202B] text-[#F6F1E4]">
-          {/* stacked-papers mark */}
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.8"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="h-5 w-5"
-            aria-hidden="true"
-          >
-            <path d="M7 3.5h7l4 4V19a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4.5a1 1 0 0 1 1-1z" />
-            <path d="M14 3.5V8h4" />
-            <path d="M9 12.5h6" />
-            <path d="M9 15.5h6" />
-          </svg>
-        </span>
-        <span className={`${display} text-xl font-extrabold`}>PaperVault</span>
-      </Link>
-
       {/* Card with offset colour block behind it */}
       <div className="relative w-full max-w-md pb-4 pr-4">
         <div

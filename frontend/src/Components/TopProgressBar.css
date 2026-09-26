@@ -1,17 +1,23 @@
 /* Progress bar */
 #nprogress .bar {
-  background: #17193b;
-  height: 5px;
+  background: #17193b !important;
+  height: 4px !important;
+  position: fixed !important;
+  z-index: 99999 !important;
 }
 
-/* Glow effect */
+/* Glow */
 #nprogress .peg {
   box-shadow:
     0 0 10px #151520,
-    0 0 5px #151520;
+    0 0 5px #151520 !important;
 }
 
-/* Remove the spinner */
+/* Hide spinner */
 #nprogress .spinner {
-  display: none;
+  display: none !important;
+}
+
+#nprogress .spinner-icon {
+  display: none !important;
 }

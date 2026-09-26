@@ -1,3 +1,4 @@
+import {Link} from 'react-router-dom'
 const display =
   "font-['Bricolage_Grotesque',ui-sans-serif,system-ui,sans-serif]";
 
@@ -139,12 +140,12 @@ function AboutPage() {
               were.
             </p>
 
-            <a
-              href="/upload"
+            <Link
+              to="/upload"
               className="mt-6 inline-block rounded-full bg-[#F6F1E4] px-6 py-2.5 text-sm font-semibold text-[#16202B] transition-colors hover:bg-white"
             >
               Upload a paper
-            </a>
+            </Link>
           </div>
         </section>
       </main>

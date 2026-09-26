@@ -1,8 +1,13 @@
-import "./TopProgressBar.css";
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import NProgress from "nprogress";
+
 import "nprogress/nprogress.css";
+import "./TopProgressBar.css";
+
+NProgress.configure({
+  showSpinner: false,
+});
 
 function TopProgressBar() {
   const location = useLocation();

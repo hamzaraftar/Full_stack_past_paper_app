@@ -47,7 +47,7 @@ function PaperCard({ paper }) {
     : `${FILE_BASE_URL}${paper.file}`;
 
   return (
-    <div className="flex flex-col rounded-2xl border border-[#17193B]/10 bg-white p-5 shadow-sm transition-shadow hover:shadow-md">
+    <div className=" group transition duration-200 hover:-translate-y-1 hover:shadow-md flex flex-col rounded-2xl border border-[#17193B]/10 bg-white p-5 shadow-sm  ">
       {/* Top row */}
       <div className="flex items-start justify-between">
         <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#F6F1E4] text-[#B0895A]">
@@ -61,7 +61,7 @@ function PaperCard({ paper }) {
 
       {/* Title + meta */}
       <div className="mt-4 flex-1">
-        <h3 className={`${display} text-lg font-bold text-[#17193B]`}>
+        <h3 className={`${display} text-lg font-bold text-[#111c38] transition group-hover:text-[#a87845]`}>
           {paper.title}
         </h3>
 

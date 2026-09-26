@@ -53,9 +53,7 @@ function ProfilePage() {
     fetchProfile();
   }, []);
 
-  // ==========================================
   // DELETE PAPER
-  // ==========================================
 
   const handleDelete = async (paperId) => {
     const confirmDelete = window.confirm(
@@ -85,9 +83,7 @@ function ProfilePage() {
     }
   };
 
-  // ==========================================
   // LOADING
-  // ==========================================
 
   if (loading) {
     return (
@@ -140,9 +136,7 @@ function ProfilePage() {
     );
   }
 
-  // ==========================================
   // ERROR
-  // ==========================================
 
   if (error) {
     return (
@@ -156,9 +150,7 @@ function ProfilePage() {
     );
   }
 
-  // ==========================================
   // USER DATA
-  // ==========================================
 
   const username = user?.username || user?.name || "Student";
 
@@ -173,16 +165,12 @@ function ProfilePage() {
       })
     : "Unknown";
 
-  // ==========================================
   // MAIN PAGE
-  // ==========================================
 
   return (
     <div className="min-h-screen bg-[#F6F1E4] text-[#142033]">
       <main className="mx-auto max-w-6xl px-6 py-12">
-        {/* ======================================
-            PROFILE HEADER
-        ====================================== */}
+            {/* PROFILE HEADER */}
 
         <section className="rounded-2xl border border-[#ddd6c8] bg-[#fbf8f1] p-8">
           <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
@@ -360,9 +348,7 @@ function ProfilePage() {
                       </span>
                     </div>
 
-                    {/* =================================
-                        CARD CONTENT
-                    ================================= */}
+                    {/* CARD CONTENT */}
 
                     <div className="mt-6 flex-1">
                       {/* Title */}

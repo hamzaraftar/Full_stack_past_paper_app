@@ -83,13 +83,23 @@ function Hero() {
           </button>
 
           {/* Browse button — always open */}
-          <Link
-            to="/papers"
-            className="flex items-center gap-2 rounded-full border-2 border-[#16202B] px-6 py-3 text-sm font-semibold text-[#16202B] transition-colors hover:bg-[#16202B] hover:text-[#F6F1E4]"
-          >
-            <SearchIcon className="h-4 w-4" />
-            Browse papers
-          </Link>
+          <div className="relative inline-flex overflow-visible">
+            {/* Animated attention ring */}
+            <span className="absolute inset-0 rounded-full border-2 border-[#16202B]/20 animate-ping" />
+
+            <Link
+              to="/papers"
+              className="group relative inline-flex items-center gap-2 rounded-full border-2 border-[#16202B] bg-[#F6F1E4] px-6 py-3 text-sm font-semibold text-[#16202B] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#16202B] hover:text-[#F6F1E4]"
+            >
+              <SearchIcon className="h-4 w-4 transition-transform duration-300 group-hover:scale-110" />
+
+              <span>Browse Papers</span>
+
+              <span className="transition-transform duration-300 group-hover:translate-x-1">
+                →
+              </span>
+            </Link>
+          </div>
         </div>
 
         <p className="mt-5 text-xs text-[#17193B]/50">
