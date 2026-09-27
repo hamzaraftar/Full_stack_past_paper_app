@@ -176,7 +176,7 @@ For file uploads, use `multipart/form-data`.
 
 Add screenshots of your application here:
 
-```text
+
 ### Home Page
 <img width="1600" height="777" alt="image" src="https://github.com/user-attachments/assets/ca5ed852-5702-4182-8191-dba576046276" />
 
@@ -192,7 +192,7 @@ Add screenshots of your application here:
 ### Student Profile
 <img width="1589" height="781" alt="image" src="https://github.com/user-attachments/assets/76fc3134-3cf2-404e-9b30-ff092b081b60" />
 
-```
+
 
 ## 🎯 Future Improvements
 
