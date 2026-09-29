@@ -1,13 +1,17 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import Paper
+from .models import Paper, University, Subject
 
 
 class UserSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = User
-        fields = ['id','username','email','password']
-        extra_kwargs = {'password': {'write_only': True},'email': {'required': True}}
+        fields = ['id', 'username', 'email', 'password']
+        extra_kwargs = {
+            'password': {'write_only': True},
+            'email': {'required': True}
+        }
 
     def create(self, validated_data):
         user = User.objects.create_user(**validated_data)
@@ -21,37 +25,55 @@ class UserSerializer(serializers.ModelSerializer):
 
         return value
 
+
+class UniversitySerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = University
+        fields = ['id', 'name']
+
+
+class SubjectSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Subject
+        fields = ['id', 'name']
+
+
 class PaperSerializer(serializers.ModelSerializer):
-    uploaded_by = serializers.CharField(read_only=True)
+    university = UniversitySerializer(read_only=True)
+    subject = SubjectSerializer(read_only=True)
+    uploaded_by = serializers.StringRelatedField(read_only=True)
 
     class Meta:
         model = Paper
-        fields = ['id','title','university','subject','file','uploaded_at','uploaded_by']
+        fields = [
+            'id',
+            'title',
+            'university',
+            'subject',
+            'file',
+            'uploaded_at',
+            'uploaded_by'
+        ]
 
-        def validate_title(self,value):
-            if not value.strip():
-                raise serializers.ValidationError("Title can't be empty")
-            return value
+    def validate_title(self, value):
+        if not value.strip():
+            raise serializers.ValidationError(
+                "Title can't be empty."
+            )
 
-        def validate_university(self,value):
-            if not value.strip():
-                raise serializers.ValidationError("Content can't be empty")            
-            return value 
-        
-        def validate_subject(self,value):
-            if not value.strip():
-                raise serializers.ValidationError("Content can't be empty")            
-            return value  
-        
-        def validate_file(self, value):
-                if not value.name.lower().endswith('.pdf'):
-                    raise serializers.ValidationError(
-                        "Only PDF files are allowed."
-                    )
+        return value
 
-                if value.size > 20 * 1024 * 1024:
-                    raise serializers.ValidationError(
-                        "File size cannot exceed 20 MB."
-                    )
-                return value         
-        
+    def validate_file(self, value):
+        if not value.name.lower().endswith('.pdf'):
+            raise serializers.ValidationError(
+                "Only PDF files are allowed."
+            )
+
+        if value.size > 20 * 1024 * 1024:
+            raise serializers.ValidationError(
+                "File size cannot exceed 20 MB."
+            )
+
+        return value
