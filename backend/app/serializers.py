@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import Paper, University, Subject
+from .models import Paper, University
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -25,24 +25,14 @@ class UserSerializer(serializers.ModelSerializer):
 
         return value
 
-
 class UniversitySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = University
         fields = ['id', 'name']
 
-
-class SubjectSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = Subject
-        fields = ['id', 'name']
-
-
 class PaperSerializer(serializers.ModelSerializer):
     university = UniversitySerializer(read_only=True)
-    subject = SubjectSerializer(read_only=True)
     uploaded_by = serializers.StringRelatedField(read_only=True)
 
     class Meta:
@@ -50,8 +40,8 @@ class PaperSerializer(serializers.ModelSerializer):
         fields = [
             'id',
             'title',
+            'course_code',
             'university',
-            'subject',
             'file',
             'uploaded_at',
             'uploaded_by'

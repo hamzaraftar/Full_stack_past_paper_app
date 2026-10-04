@@ -1,11 +1,10 @@
-from django.shortcuts import render
-from .models import Paper
-from .serializers import UserSerializer,PaperSerializer
+from .models import Paper,University
+from .serializers import UserSerializer,PaperSerializer,UniversitySerializer
 from rest_framework.views import APIView
-from rest_framework.permissions import IsAuthenticated,AllowAny
+from rest_framework.permissions import IsAuthenticated,AllowAny,IsAdminUser
 from rest_framework.response import Response
 
-#---------------------------------------- for User 
+#----------------------------------------  User view
 class UserInfo(APIView):
     def get_permissions(self):
         if self.request.method == 'POST':
@@ -22,6 +21,7 @@ class UserInfo(APIView):
             user = serializer.save()
             return Response({"message":"User was created successfully "},status=201)
         return Response(serializer.errors, status=400)
+    
 
 #---------------------------------------- Profile view
 class ProfileAPIView(APIView):
@@ -31,8 +31,38 @@ class ProfileAPIView(APIView):
         papers = Paper.objects.filter(uploaded_by=request.user)
         serializer = PaperSerializer(papers , many=True)
         return Response(serializer.data)
+    
 
-#---------------------------------------- for Papers
+# -------------------------------------- University view
+class UniversityAPIView(APIView):
+    def get_permissions(self):
+        if self.request.method == "POST":
+            return [IsAdminUser()]
+        return [AllowAny()]
+    
+    def get (self,request,pk=None):
+        if pk is not None:
+            try:
+                university = University.objects.get(pk=pk)
+            except University.DoesNotExist:
+                return Response({"error":f"University with id {pk} is not found"},status=404) 
+               
+            serializer = UniversitySerializer(university)    
+            return Response(serializer.data)
+
+        universitys = University.objects.all()
+        serializer = UniversitySerializer(universitys , many=True)
+        return Response(serializer.data)
+
+    def post(self,request):
+        serializer = UniversitySerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors,status=400)    
+
+
+#----------------------------------------  Papers view
 class PaperAPIView(APIView):
     def get_permissions(self):
         if self.request.method == "GET":
