@@ -62,6 +62,16 @@ class UniversityAPIView(APIView):
         return Response(serializer.errors,status=400)    
 
 
+class UniversityPapersAPIView(APIView):
+    def get_permissions(self):
+        if self.request.method == "GET":
+            return [AllowAny()]
+
+    def get(self, request, pk):
+        papers = Paper.objects.filter(university_id=pk)
+        serializer = PaperSerializer(papers, many=True)
+        return Response(serializer.data)
+
 #----------------------------------------  Papers view
 class PaperAPIView(APIView):
     def get_permissions(self):

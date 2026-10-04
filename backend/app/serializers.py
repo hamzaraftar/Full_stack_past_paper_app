@@ -33,18 +33,27 @@ class UniversitySerializer(serializers.ModelSerializer):
 
 class PaperSerializer(serializers.ModelSerializer):
     university = UniversitySerializer(read_only=True)
+
+    university_id = serializers.PrimaryKeyRelatedField(
+        queryset=University.objects.all(),
+        source='university',
+        write_only=True
+    )
+
     uploaded_by = serializers.StringRelatedField(read_only=True)
 
     class Meta:
         model = Paper
+
         fields = [
             'id',
             'title',
             'course_code',
-            'university',
             'file',
             'uploaded_at',
-            'uploaded_by'
+            'uploaded_by',
+            'university',
+            'university_id'
         ]
 
     def validate_title(self, value):

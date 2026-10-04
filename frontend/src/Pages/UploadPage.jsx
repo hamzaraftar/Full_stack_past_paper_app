@@ -1,7 +1,6 @@
-import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import api from "../api";
-import Navebar from '../Components/Navebar' 
 
 // Same fonts as LoginPage.jsx (see the <link> comment there).
 const display =
@@ -14,17 +13,71 @@ const focusRing =
 const inputClass =
   "w-full rounded-xl border-2 border-[#17193B]/15 bg-white px-4 py-3.5 text-base text-[#17193B] placeholder:text-[#17193B]/40 transition-colors hover:border-[#17193B]/30 focus:border-[#B0895A] focus:outline-none focus:ring-4 focus:ring-[#B0895A]/15 disabled:cursor-not-allowed disabled:opacity-60";
 
+// Handles plain arrays and DRF pagination ({ results: [] })
+function toList(data) {
+  if (Array.isArray(data)) return data;
+  if (Array.isArray(data?.results)) return data.results;
+  return [];
+}
+
+// Turns DRF errors like { course_code: ["This field is required."] }
+// into "course_code: This field is required."
+function describeError(data) {
+  if (!data) return "";
+  if (typeof data === "string") return data.length < 200 ? data : "";
+  if (data.detail) return String(data.detail);
+
+  return Object.entries(data)
+    .map(([field, msg]) => {
+      const text = Array.isArray(msg) ? msg.join(" ") : String(msg);
+      return field === "non_field_errors" ? text : `${field}: ${text}`;
+    })
+    .join(" | ");
+}
+
 function UploadPage() {
   const [title, setTitle] = useState("");
-  const [university, setUniversity] = useState("");
-  const [subject, setSubject] = useState("");
+  const [universityId, setUniversityId] = useState(""); // selected university id (FK)
+  const [courseCode, setCourseCode] = useState("");
   const [file, setFile] = useState(null); // File object, not a string
   const [fileName, setFileName] = useState("");
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
+  // University dropdown data
+  const [universities, setUniversities] = useState([]);
+  const [uniLoading, setUniLoading] = useState(true);
+  const [uniError, setUniError] = useState(false);
+  const [uniReload, setUniReload] = useState(0); // bump to retry
+
   const navigate = useNavigate();
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function fetchUniversities() {
+      try {
+        setUniLoading(true);
+        setUniError(false);
+
+        const response = await api.get("api/university/");
+
+        if (!cancelled) setUniversities(toList(response.data));
+      } catch (err) {
+        console.error("Couldn't load universities:", err);
+        if (!cancelled) setUniError(true);
+      } finally {
+        if (!cancelled) setUniLoading(false);
+      }
+    }
+
+    fetchUniversities();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [uniReload]);
 
   const handleFileChange = (e) => {
     const selected = e.target.files?.[0] || null;
@@ -36,7 +89,7 @@ function UploadPage() {
     e.preventDefault();
     setErrorMsg("");
 
-    if (!title || !university || !subject || !file) {
+    if (!title || !courseCode || !universityId || !file) {
       setErrorMsg("Fill in every field and attach a file before uploading.");
       return;
     }
@@ -46,8 +99,8 @@ function UploadPage() {
     // File uploads need FormData, not a plain JSON object.
     const formData = new FormData();
     formData.append("title", title);
-    formData.append("university", university);
-    formData.append("subject", subject);
+    formData.append("course_code", courseCode);
+    formData.append("university_id", universityId); // serializer expects university_id
     formData.append("file", file);
 
     try {
@@ -58,8 +111,16 @@ function UploadPage() {
       setSuccess(true);
       setTimeout(() => navigate("/profile"), 1200);
     } catch (error) {
-      console.error(error.message);
-      setErrorMsg("Couldn't upload that paper. Check the file and try again.");
+      // Django (DRF) sends the reason in error.response.data
+      console.error(
+        "Upload failed:",
+        error.response?.status,
+        error.response?.data,
+      );
+      setErrorMsg(
+        describeError(error.response?.data) ||
+          "Couldn't upload that paper. Check the file and try again.",
+      );
       setLoading(false);
     }
   };
@@ -70,8 +131,6 @@ function UploadPage() {
     <div
       className={`${body} flex min-h-screen flex-col items-center justify-center bg-[#F6F1E4] px-6 py-12 text-[#17193B]`}
     >
-     
-
       {/* Card with offset colour block behind it */}
       <div className="relative w-full max-w-md pb-4 pr-4">
         <div
@@ -99,7 +158,7 @@ function UploadPage() {
               <input
                 id="title"
                 type="text"
-                placeholder="e.g. Physics Paper or Course code"
+                placeholder="e.g. Data Structures"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 disabled={locked}
@@ -107,6 +166,26 @@ function UploadPage() {
               />
             </div>
 
+            {/* Course code (right after title) */}
+            <div>
+              <label
+                htmlFor="course_code"
+                className="mb-2 block text-sm font-semibold"
+              >
+                Course code
+              </label>
+              <input
+                id="course_code"
+                type="text"
+                placeholder="e.g. CS301"
+                value={courseCode}
+                onChange={(e) => setCourseCode(e.target.value)}
+                disabled={locked}
+                className={inputClass}
+              />
+            </div>
+
+            {/* University dropdown */}
             <div>
               <label
                 htmlFor="university"
@@ -114,33 +193,64 @@ function UploadPage() {
               >
                 University / Institution
               </label>
-              <input
-                id="university"
-                type="text"
-                placeholder="e.g. University of the Punjab"
-                value={university}
-                onChange={(e) => setUniversity(e.target.value)}
-                disabled={locked}
-                className={inputClass}
-              />
-            </div>
 
-            <div>
-              <label
-                htmlFor="subject"
-                className="mb-2 block text-sm font-semibold"
-              >
-                Subject
-              </label>
-              <input
-                id="subject"
-                type="text"
-                placeholder="e.g. Physics"
-                value={subject}
-                onChange={(e) => setSubject(e.target.value)}
-                disabled={locked}
-                className={inputClass}
-              />
+              <div className="relative">
+                <select
+                  id="university"
+                  value={universityId}
+                  onChange={(e) => setUniversityId(e.target.value)}
+                  disabled={locked || uniLoading || uniError}
+                  className={`${inputClass} cursor-pointer appearance-none pr-11 ${
+                    universityId ? "" : "text-[#17193B]/40"
+                  }`}
+                >
+                  <option value="">
+                    {uniLoading
+                      ? "Loading universities…"
+                      : uniError
+                        ? "Couldn't load universities"
+                        : "Select your university"}
+                  </option>
+
+                  {universities.map((u) => (
+                    <option key={u.id} value={u.id} className="text-[#17193B]">
+                      {u.name}
+                    </option>
+                  ))}
+                </select>
+
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#17193B]/60"
+                  aria-hidden="true"
+                >
+                  <path d="m6 9 6 6 6-6" />
+                </svg>
+              </div>
+
+              {uniError && (
+                <p className="mt-2 text-xs text-[#8A3624]">
+                  Universities didn't load.{" "}
+                  <button
+                    type="button"
+                    onClick={() => setUniReload((n) => n + 1)}
+                    className="cursor-pointer font-semibold underline underline-offset-2"
+                  >
+                    Try again
+                  </button>
+                </p>
+              )}
+
+              {!uniLoading && !uniError && universities.length === 0 && (
+                <p className="mt-2 text-xs text-[#17193B]/60">
+                  No universities available yet. Ask an admin to add one.
+                </p>
+              )}
             </div>
 
             <div>
@@ -170,7 +280,7 @@ function UploadPage() {
                   <path d="M5 15v3a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-3" />
                 </svg>
                 <span className="text-sm font-medium text-[#17193B]">
-                  {fileName || "Click to choose a PDF or image"}
+                  {fileName || "Click to choose a PDF"}
                 </span>
                 <span className="text-xs text-[#17193B]/50">
                   Only PDF up to 20MB
@@ -178,7 +288,7 @@ function UploadPage() {
                 <input
                   id="file"
                   type="file"
-                  accept=".pdf,.jpg,.jpeg,.png"
+                  accept=".pdf,application/pdf"
                   onChange={handleFileChange}
                   disabled={locked}
                   className="sr-only"

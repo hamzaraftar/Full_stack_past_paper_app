@@ -18,9 +18,7 @@ function ProfilePage() {
 
   const [deletingId, setDeletingId] = useState(null);
 
-  // ==========================================
   // GET USER + PAPERS
-  // ==========================================
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -34,8 +32,6 @@ function ProfilePage() {
         // Get logged-in user's papers
         const papersResponse = await api.get("api/profile/");
 
-        console.log("User:", userResponse.data);
-        console.log("Papers:", papersResponse.data);
 
         setUser(userResponse.data);
 
@@ -275,9 +271,7 @@ function ProfilePage() {
             </Link>
           </div>
 
-          {/* ======================================
-              PAPERS
-          ====================================== */}
+              {/* PAPERS */}
 
           {papers.length > 0 ? (
             <div className="mt-7 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
@@ -360,14 +354,14 @@ function ProfilePage() {
                       {/* University */}
 
                       <p className="mt-2 text-sm leading-5 text-[#667085]">
-                        {paper.university}
+                        {paper.university.name}
                       </p>
 
                       {/* Subject + PDF */}
 
                       <div className="mt-4 flex flex-wrap items-center gap-2">
                         <span className="rounded-full bg-[#eee8dc] px-3 py-1 text-xs font-medium text-[#596274]">
-                          {paper.subject}
+                          <span className="text-[#17193B]/70">Course Code</span>  {paper.course_code}
                         </span>
 
                         <span className="rounded-full bg-[#eee8dc] px-3 py-1 text-xs font-medium text-[#596274]">
