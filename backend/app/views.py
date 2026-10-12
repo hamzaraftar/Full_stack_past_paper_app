@@ -61,7 +61,7 @@ class UniversityAPIView(APIView):
             return Response(serializer.data)
         return Response(serializer.errors,status=400)    
 
-
+# ------------------------------------- for university sepicific  paper
 class UniversityPapersAPIView(APIView):
     def get_permissions(self):
         if self.request.method == "GET":
